@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
@@ -12,6 +13,7 @@ func main() {
 	r := gin.New()
 
 	r.GET("/", Handler)
+	r.GET("/readyz", HealthCheckHandler)
 	r.Run(":8080")
 }
 
@@ -28,5 +30,12 @@ func generateRandomWord(c *gin.Context) string {
 	rand.New(rand.NewSource(seed))
 
 	word := words[rand.Intn(len(words))]
+
+	fmt.Println(word)
+
 	return word
+}
+
+func HealthCheckHandler(c *gin.Context) {
+	c.String(http.StatusOK, "Healthy")
 }

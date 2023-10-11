@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: work-gke-gce-gateway
+  namespace: work-gke-gce
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: work-gke-gce-vs
+  namespace: work-gke-gce  
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - work-gke-gce-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: server.work-gke-gce.svc.cluster.local
+        port:
+          number: 8080
+
+
+

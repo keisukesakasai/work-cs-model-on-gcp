@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-clusterip
+  namespace: work-gke-gce
+  labels:
+    app: server-clusterip
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server-clusterip
+  template:
+    metadata:
+      labels:
+        app: server-clusterip
+    spec:
+      containers:
+        - name: server
+          image: ghcr.io/keisukesakasai/work-cs-model-on-gcp/server:latest
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 250Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi                
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-clusterip
+  namespace: work-gke-gce
+spec:
+  selector:
+    app: server-clusterip
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
